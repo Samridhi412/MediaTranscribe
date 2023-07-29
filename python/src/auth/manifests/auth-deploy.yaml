@@ -1,0 +1,31 @@
+apiVersion: apps/v1 #which version of API we are using to create objects
+kind: Deployment #kind of object to create
+metadata: #helps uniquely identify object
+  name: auth
+  labels:
+    app: auth
+
+spec: #what state you desire for object
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+        - name: auth
+          image: samridhi3404/auth
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: auth-configmap
+            - secretRef:
+                name: auth-secret
